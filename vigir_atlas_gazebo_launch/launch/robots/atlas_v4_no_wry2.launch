@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <param name="robot_description_gazebo" command="$(find xacro)/xacro.py '$(find atlas_description)/robots/vigir_atlas_v4_7dof.urdf.xacro'" />
+
+  <!-- flag to let gazebo plugins know which version of atlas is running -->
+  <param name="atlas_version"   value="5" type="int"/>
+  
+  <!-- Arms -->
+  <rosparam command="load" file="$(find drcsim_gazebo)/config/whole_body_trajectory_controller_v5.yaml" />
+  
+
+  
+</launch>

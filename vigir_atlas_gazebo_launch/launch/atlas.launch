@@ -27,7 +27,10 @@
 
   <!-- Robot Description -->
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find atlas_description)/robots/vigir_atlas.urdf.xacro'" />
-  <param name="robot_description_gazebo" command="$(find xacro)/xacro.py '$(find atlas_description)/robots/vigir_atlas.urdf.xacro'" />
+  
+  <include file="$(find vigir_atlas_gazebo_launch)/launch/robots/$(env FLOR_ROBOT_TYPE).launch"/>
+
+  
   <param name="robot_initial_pose/x"     value="0" type="double"/>
   <param name="robot_initial_pose/y"     value="0" type="double"/>
   <param name="robot_initial_pose/z"     value="0.95" type="double"/>
