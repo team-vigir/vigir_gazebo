@@ -10,6 +10,7 @@
   <!-- start gazebo with the Atlas and record the gazebo log -->
   <node name="gazebo" pkg="drcsim_gazebo" type="run_$(arg gzname)" args="$(arg gzworld) $(arg extra_gazebo_args)" output="screen">
     <remap from="robot_description" to="robot_description_gazebo" />
+    <remap from="/atlas/joint_states" to="/atlas/joint_states_gazebo" />
   </node>
 </launch>
   

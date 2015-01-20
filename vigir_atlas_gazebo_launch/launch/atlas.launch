@@ -26,7 +26,9 @@
   <param name="/atlas/delay_max_per_step" type="double" value="0.025"/>
 
   <!-- Robot Description -->
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find atlas_description)/robots/vigir_atlas.urdf.xacro'" />
+  <!--Team ViGIR loads the robot description during onboard and OCS launch -->
+  <!--    uses special robot_description_gazebo for simulation -->
+  <!--param name="robot_description" command="$(find xacro)/xacro.py '$(find atlas_description)/robots/vigir_atlas.urdf.xacro'" /-->
   
   <include file="$(find vigir_atlas_gazebo_launch)/launch/robots/$(env FLOR_ROBOT_TYPE).launch"/>
 

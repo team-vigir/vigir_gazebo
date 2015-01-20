@@ -5,14 +5,15 @@
   <param name="/use_sim_time" type="bool" value="true"/>
 
   <!-- joint states to tf -->
-  <node pkg="robot_state_publisher" type="state_publisher" name="atlas_robot_state_publisher">
+  <!-- Team ViGIR will start state publishing from device interfaces after loading special robot_description -->
+  <!--node pkg="robot_state_publisher" type="state_publisher" name="atlas_robot_state_publisher">
     <param name="publish_frequency" type="double" value="50.0" />
     <remap from="joint_states" to="/atlas/joint_states" />
   </node>
   <node pkg="robot_state_publisher" type="state_publisher" name="multisense_robot_state_publisher">
     <param name="publish_frequency" type="double" value="50.0" />
     <remap from="joint_states" to="/multisense/joint_states" />
-  </node>
+  </node-->
 
   <!-- Fake Calibration
   <node pkg="rostopic" type="rostopic" name="fake_joint_calibration"
