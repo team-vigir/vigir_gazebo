@@ -29,6 +29,10 @@
   <!--Team ViGIR loads the robot description during onboard and OCS launch -->
   <!--    uses special robot_description_gazebo for simulation -->
   <!--param name="robot_description" command="$(find xacro)/xacro.py '$(find atlas_description)/robots/vigir_atlas.urdf.xacro'" /-->
+
+  <!--Nodes required for Simulation of Hands -->
+  <include file="$(find vigir_atlas_gazebo_launch)/launch/hands/$(env FLOR_LEFT_HAND_TYPE).launch"/>
+  <include file="$(find vigir_atlas_gazebo_launch)/launch/hands/$(env FLOR_RIGHT_HAND_TYPE).launch"/>
   
   <include file="$(find vigir_atlas_gazebo_launch)/launch/robots/$(env FLOR_ROBOT_TYPE).launch"/>
 
