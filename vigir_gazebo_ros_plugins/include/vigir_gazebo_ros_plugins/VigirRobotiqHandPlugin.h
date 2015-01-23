@@ -14,8 +14,8 @@
  * limitations under the License.
  *
 */
-#ifndef GAZEBO_ROBOTIQ_HAND_PLUGIN_HH
-#define GAZEBO_ROBOTIQ_HAND_PLUGIN_HH
+#ifndef GAZEBO_VIGIR_ROBOTIQ_HAND_PLUGIN_HH
+#define GAZEBO_VIGIR_ROBOTIQ_HAND_PLUGIN_HH
 
 #include <atlas_msgs/SModelRobotInput.h>
 #include <atlas_msgs/SModelRobotOutput.h>
@@ -52,7 +52,7 @@
 ///                     This parameter is optional.
 ///   * <topic_state> ROS topic name used to receive state from the hand.
 ///                   This parameter is optional.
-class RobotiqHandPlugin : public gazebo::ModelPlugin
+class VigirRobotiqHandPlugin : public gazebo::ModelPlugin
 {
   /// \brief Hand states.
   enum State
@@ -75,10 +75,10 @@ class RobotiqHandPlugin : public gazebo::ModelPlugin
   };
 
   /// \brief Constructor.
-  public: RobotiqHandPlugin();
+  public: VigirRobotiqHandPlugin();
 
   /// \brief Destructor.
-  public: virtual ~RobotiqHandPlugin();
+  public: virtual ~VigirRobotiqHandPlugin();
 
   // Documentation inherited.
   public: void Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr _sdf);
@@ -164,7 +164,7 @@ class RobotiqHandPlugin : public gazebo::ModelPlugin
   /// \brief Number of joints in the hand.
   /// The three fingers can do abduction/adduction.
   /// Fingers 1 and 2 can do circumduction in one axis.
-  private: static const int NumJoints = 5;
+  private: static const int NumJoints = 11;
 
   /// \brief Velocity tolerance. Below this value we assume that the joint is
   /// stopped (rad/s).
@@ -282,4 +282,4 @@ class RobotiqHandPlugin : public gazebo::ModelPlugin
   private: gazebo::common::PID posePID[NumJoints];
 };
 
-#endif  // GAZEBO_ROBOTIQ_HAND_PLUGIN_HH
+#endif  // GAZEBO_VIGIR_ROBOTIQ_HAND_PLUGIN_HH

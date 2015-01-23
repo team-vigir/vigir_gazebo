@@ -24,20 +24,20 @@
 #include <gazebo/common/Time.hh>
 #include <gazebo/math/Angle.hh>
 #include <gazebo/physics/physics.hh>
-#include "drcsim_gazebo_ros_plugins/RobotiqHandPlugin.h"
+#include <vigir_gazebo_ros_plugins/VigirRobotiqHandPlugin.h>
 
 // Default topic names initialization.
-const std::string RobotiqHandPlugin::DefaultLeftTopicCommand  =
+const std::string VigirRobotiqHandPlugin::DefaultLeftTopicCommand  =
   "/left_hand/command";
-const std::string RobotiqHandPlugin::DefaultLeftTopicState    =
+const std::string VigirRobotiqHandPlugin::DefaultLeftTopicState    =
   "/left_hand/state";
-const std::string RobotiqHandPlugin::DefaultRightTopicCommand =
+const std::string VigirRobotiqHandPlugin::DefaultRightTopicCommand =
   "/right_hand/command";
-const std::string RobotiqHandPlugin::DefaultRightTopicState   =
+const std::string VigirRobotiqHandPlugin::DefaultRightTopicState   =
   "/right_hand/state";
 
 ////////////////////////////////////////////////////////////////////////////////
-RobotiqHandPlugin::RobotiqHandPlugin()
+VigirRobotiqHandPlugin::VigirRobotiqHandPlugin()
 {
   // PID default parameters.
   for (int i = 0; i < this->NumJoints; ++i)
@@ -54,7 +54,7 @@ RobotiqHandPlugin::RobotiqHandPlugin()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-RobotiqHandPlugin::~RobotiqHandPlugin()
+VigirRobotiqHandPlugin::~VigirRobotiqHandPlugin()
 {
   gazebo::event::Events::DisconnectWorldUpdateBegin(this->updateConnection);
   this->rosNode->shutdown();
@@ -64,7 +64,7 @@ RobotiqHandPlugin::~RobotiqHandPlugin()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent,
+void VigirRobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent,
                              sdf::ElementPtr _sdf)
 {
   this->model = _parent;
@@ -84,9 +84,9 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent,
   // Load the vector of all joints.
   std::string prefix;
   if (this->side == "left")
-    prefix = "l_";
+    prefix = "left_";
   else
-    prefix = "r_";
+    prefix = "right_";
 
   // Load the vector of all joints.
   if (!this->FindJoints())
@@ -178,7 +178,7 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent,
   ros::SubscribeOptions handleCommandSo =
     ros::SubscribeOptions::create<atlas_msgs::SModelRobotOutput>(
       controlTopicName, 100,
-      boost::bind(&RobotiqHandPlugin::SetHandleCommand, this, _1),
+      boost::bind(&VigirRobotiqHandPlugin::SetHandleCommand, this, _1),
       ros::VoidPtr(), &this->rosQueue);
 
   // Enable TCP_NODELAY since TCP causes bursty communication with high jitter.
@@ -191,15 +191,15 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent,
 
   // Start callback queue.
   this->callbackQueueThread =
-    boost::thread(boost::bind(&RobotiqHandPlugin::RosQueueThread, this));
+    boost::thread(boost::bind(&VigirRobotiqHandPlugin::RosQueueThread, this));
 
   // Connect to gazebo world update.
   this->updateConnection =
     gazebo::event::Events::ConnectWorldUpdateBegin(
-      boost::bind(&RobotiqHandPlugin::UpdateStates, this));
+      boost::bind(&VigirRobotiqHandPlugin::UpdateStates, this));
 
   // Log information.
-  gzlog << "RobotiqHandPlugin loaded for " << this->side << " hand."
+  gzlog << "VigirRobotiqHandPlugin loaded for " << this->side << " hand."
         << std::endl;
   for (int i = 0; i < this->NumJoints; ++i)
   {
@@ -220,7 +220,7 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RobotiqHandPlugin::VerifyField(const std::string &_label, int _min,
+bool VigirRobotiqHandPlugin::VerifyField(const std::string &_label, int _min,
   int _max, int _v)
 {
   if (_v < _min || _v > _max)
@@ -233,7 +233,7 @@ bool RobotiqHandPlugin::VerifyField(const std::string &_label, int _min,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RobotiqHandPlugin::VerifyCommand(
+bool VigirRobotiqHandPlugin::VerifyCommand(
     const atlas_msgs::SModelRobotOutput::ConstPtr &_command)
 {
   return this->VerifyField("rACT", 0, 1,   _command->rACT) &&
@@ -257,7 +257,7 @@ bool RobotiqHandPlugin::VerifyCommand(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::SetHandleCommand(
+void VigirRobotiqHandPlugin::SetHandleCommand(
     const atlas_msgs::SModelRobotOutput::ConstPtr &_msg)
 {
   boost::mutex::scoped_lock lock(this->controlMutex);
@@ -276,7 +276,7 @@ void RobotiqHandPlugin::SetHandleCommand(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::ReleaseHand()
+void VigirRobotiqHandPlugin::ReleaseHand()
 {
   // Open the fingers.
   this->handleCommand.rPRA = 0;
@@ -290,7 +290,7 @@ void RobotiqHandPlugin::ReleaseHand()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::StopHand()
+void VigirRobotiqHandPlugin::StopHand()
 {
   // Set the target positions to the current ones.
   this->handleCommand.rPRA = this->handleState.gPRA;
@@ -299,7 +299,7 @@ void RobotiqHandPlugin::StopHand()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RobotiqHandPlugin::IsHandFullyOpen()
+bool VigirRobotiqHandPlugin::IsHandFullyOpen()
 {
   bool fingersOpen = true;
 
@@ -319,7 +319,7 @@ bool RobotiqHandPlugin::IsHandFullyOpen()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::UpdateStates()
+void VigirRobotiqHandPlugin::UpdateStates()
 {
   boost::mutex::scoped_lock lock(this->controlMutex);
 
@@ -447,7 +447,7 @@ void RobotiqHandPlugin::UpdateStates()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-uint8_t RobotiqHandPlugin::GetObjectDetection(
+uint8_t VigirRobotiqHandPlugin::GetObjectDetection(
   const gazebo::physics::JointPtr &_joint, int _index, uint8_t _rPR,
   uint8_t _prevrPR)
 {
@@ -486,7 +486,7 @@ uint8_t RobotiqHandPlugin::GetObjectDetection(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-uint8_t RobotiqHandPlugin::GetCurrentPosition(
+uint8_t VigirRobotiqHandPlugin::GetCurrentPosition(
   const gazebo::physics::JointPtr &_joint)
 {
   // Full range of motion.
@@ -505,7 +505,7 @@ uint8_t RobotiqHandPlugin::GetCurrentPosition(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::GetAndPublishHandleState()
+void VigirRobotiqHandPlugin::GetAndPublishHandleState()
 {
   // gACT. Initialization status.
   this->handleState.gACT = this->userHandleCommand.rACT;
@@ -622,7 +622,7 @@ void RobotiqHandPlugin::GetAndPublishHandleState()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::GetAndPublishJointState(
+void VigirRobotiqHandPlugin::GetAndPublishJointState(
                                            const gazebo::common::Time &_curTime)
 {
   this->jointStates.header.stamp = ros::Time(_curTime.sec, _curTime.nsec);
@@ -637,7 +637,7 @@ void RobotiqHandPlugin::GetAndPublishJointState(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::UpdatePIDControl(double _dt)
+void VigirRobotiqHandPlugin::UpdatePIDControl(double _dt)
 {
   if (this->handState == Disabled)
   {
@@ -736,7 +736,7 @@ void RobotiqHandPlugin::UpdatePIDControl(double _dt)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RobotiqHandPlugin::GetAndPushBackJoint(const std::string& _jointName,
+bool VigirRobotiqHandPlugin::GetAndPushBackJoint(const std::string& _jointName,
                                             gazebo::physics::Joint_V& _joints)
 {
   gazebo::physics::JointPtr joint = this->model->GetJoint(_jointName);
@@ -748,24 +748,24 @@ bool RobotiqHandPlugin::GetAndPushBackJoint(const std::string& _jointName,
     return false;
   }
   _joints.push_back(joint);
-  gzlog << "RobotiqHandPlugin found joint [" << _jointName << "]" << std::endl;
+  gzlog << "VigirRobotiqHandPlugin found joint [" << _jointName << "]" << std::endl;
   return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RobotiqHandPlugin::FindJoints()
+bool VigirRobotiqHandPlugin::FindJoints()
 {
   // Load up the joints we expect to use, finger by finger.
   gazebo::physics::JointPtr joint;
   std::string prefix;
   std::string suffix;
   if (this->side == "left")
-    prefix = "l_";
+    prefix = "left_";
   else
-    prefix = "r_";
+    prefix = "right_";
 
   // palm_finger_1_joint (actuated).
-  suffix = "palm_finger_1_joint";
+  suffix = "f2_j0";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
     return false;
   if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
@@ -773,7 +773,7 @@ bool RobotiqHandPlugin::FindJoints()
   this->jointNames.push_back(prefix + suffix);
 
   // palm_finger_2_joint (actuated).
-  suffix = "palm_finger_2_joint";
+  suffix = "f1_j0";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
     return false;
   if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
@@ -782,83 +782,86 @@ bool RobotiqHandPlugin::FindJoints()
 
   // We read the joint state from finger_1_joint_1
   // but we actuate finger_1_joint_proximal_actuating_hinge (actuated).
-  suffix = "finger_1_joint_proximal_actuating_hinge";
+  suffix = "f2_j1";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
-  suffix = "finger_1_joint_1";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
   // We read the joint state from finger_2_joint_1
   // but we actuate finger_2_proximal_actuating_hinge (actuated).
-  suffix = "finger_2_joint_proximal_actuating_hinge";
+  suffix = "f1_j1";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
-  suffix = "finger_2_joint_1";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
   // We read the joint state from finger_middle_joint_1
   // but we actuate finger_middle_proximal_actuating_hinge (actuated).
-  suffix = "finger_middle_joint_proximal_actuating_hinge";
+  suffix = "f0_j1";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
-  suffix = "finger_middle_joint_1";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
   // finger_1_joint_2 (underactuated).
-  suffix = "finger_1_joint_2";
+  suffix = "f2_j2";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
+    return false;
+  if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
   // finger_1_joint_3 (underactuated).
-  suffix = "finger_1_joint_3";
+  suffix = "f2_j3";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
+    return false;
+  if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
   // finger_2_joint_2 (underactuated).
-  suffix = "finger_2_joint_2";
+  suffix = "f1_j2";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
+    return false;
+  if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
   // finger_2_joint_3 (underactuated).
-  suffix = "finger_2_joint_3";
+  suffix = "f1_j3";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
     return false;
-  this->jointNames.push_back(prefix + suffix);
-
-  // palm_finger_middle_joint (underactuated).
-  suffix = "palm_finger_middle_joint";
-  if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
+  if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
   // finger_middle_joint_2 (underactuated).
-  suffix = "finger_middle_joint_2";
+  suffix = "f0_j2";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
+    return false;
+  if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
   // finger_middle_joint_3 (underactuated).
-  suffix = "finger_middle_joint_3";
+  suffix = "f0_j3";
   if (!this->GetAndPushBackJoint(prefix + suffix, this->joints))
+    return false;
+  if (!this->GetAndPushBackJoint(prefix + suffix, this->fingerJoints))
     return false;
   this->jointNames.push_back(prefix + suffix);
 
-  gzlog << "RobotiqHandPlugin found all joints for " << this->side
+  gzlog << "VigirRobotiqHandPlugin found all joints for " << this->side
         << " hand." << std::endl;
   return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RobotiqHandPlugin::RosQueueThread()
+void VigirRobotiqHandPlugin::RosQueueThread()
 {
   static const double timeout = 0.01;
 
@@ -868,4 +871,5 @@ void RobotiqHandPlugin::RosQueueThread()
   }
 }
 
-GZ_REGISTER_MODEL_PLUGIN(RobotiqHandPlugin)
+GZ_REGISTER_MODEL_PLUGIN(VigirRobotiqHandPlugin)
+

@@ -41,14 +41,14 @@ link_directories(
   ${GAZEBO_LIBRARY_DIRS}
 )
 
-add_library(RobotiqHandPlugin src/RobotiqHandPlugin.cpp)
-set_target_properties(RobotiqHandPlugin PROPERTIES LINK_FLAGS "${ld_flags}")
-set_target_properties(RobotiqHandPlugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
-target_link_libraries(RobotiqHandPlugin ${catkin_LIBRARIES})
-add_dependencies(RobotiqHandPlugin handle_msgs_gencpp atlas_msgs_gencpp)
+add_library(VigirRobotiqHandPlugin src/VigirRobotiqHandPlugin.cpp)
+set_target_properties(VigirRobotiqHandPlugin PROPERTIES LINK_FLAGS "${ld_flags}")
+set_target_properties(VigirRobotiqHandPlugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
+target_link_libraries(VigirRobotiqHandPlugin ${catkin_LIBRARIES})
+add_dependencies(VigirRobotiqHandPlugin handle_msgs_gencpp atlas_msgs_gencpp)
 
 install(TARGETS
-  RobotiqHandPlugin
+  VigirRobotiqHandPlugin
   DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}/${PROJECT_NAME}/plugins/
 )
 
