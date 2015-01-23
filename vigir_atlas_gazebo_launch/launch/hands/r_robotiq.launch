@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<launch>  
+
+  <!-- additional nodes to publish joint states for the hands -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robotiq_hands_r_hand_robot_state_publisher" respawn="true">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <remap from="robot_description" to="robot_description_gazebo" />
+    <remap from="joint_states" to="/right_robotiq/joint_states" />
+  </node>
+
+  <node name="r_robotiq_sim_converter" pkg="flor_robotiq_hands_tools" type="sim_robotiq_gazebo_converter">
+    <param name="hand_side" value="right" type="string"/>
+    <param name="hand_name" value="r_hand" type="string"/>
+  </node>
+
+</launch>

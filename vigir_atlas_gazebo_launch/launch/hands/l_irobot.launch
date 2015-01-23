@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node name="l_irobot_joints_republisher" pkg="flor_irobot_hands_tools" type="fake_irobot_publisher"/>
+</launch>
