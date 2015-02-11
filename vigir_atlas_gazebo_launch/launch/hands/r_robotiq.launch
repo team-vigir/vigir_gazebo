@@ -2,6 +2,8 @@
 
 <launch>  
 
+  <rosparam ns="/right_robotiq/right_robotiq_ros_controller" >robotiq_activation_time: 1</rosparam>
+
   <!-- additional nodes to publish joint states for the hands -->
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robotiq_hands_r_hand_robot_state_publisher" respawn="true">
     <param name="publish_frequency" type="double" value="50.0" />

@@ -2,17 +2,18 @@
 
 <launch>   
 
+  <rosparam ns="/left_robotiq/left_robotiq_ros_controller" >robotiq_activation_time: 1</rosparam>
+
   <!-- additional nodes to publish joint states for the hands -->
-  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robotiq_hands_l_hand_robot_state_publisher"  respawn="true">
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robotiq_hands_l_hand_robot_state_publisher" respawn="true">
     <param name="publish_frequency" type="double" value="50.0" />
     <remap from="robot_description" to="robot_description_gazebo" />
     <remap from="joint_states" to="/left_robotiq/joint_states" />
   </node>
 
   <node name="l_robotiq_sim_converter" pkg="flor_robotiq_hands_tools" type="sim_robotiq_gazebo_converter">
-    <param name="hand_side" value="left" type="string"/>
+    <param name="hand_side" value="left"  type="string"/>
     <param name="hand_name" value="l_hand" type="string"/>
   </node>
-
 
 </launch>
