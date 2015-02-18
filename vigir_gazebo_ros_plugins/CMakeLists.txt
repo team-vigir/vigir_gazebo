@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES drcsim_gazebo_ros_plugins
   CATKIN_DEPENDS gazebo_plugins
 #  DEPENDS system_lib
@@ -47,8 +47,15 @@ set_target_properties(VigirRobotiqHandPlugin PROPERTIES COMPILE_FLAGS "${cxx_fla
 target_link_libraries(VigirRobotiqHandPlugin ${catkin_LIBRARIES})
 add_dependencies(VigirRobotiqHandPlugin handle_msgs_gencpp atlas_msgs_gencpp)
 
+add_library(VigirVRCPlugin src/VigirVRCPlugin.cpp)
+set_target_properties(VigirVRCPlugin PROPERTIES LINK_FLAGS "${ld_flags}")
+set_target_properties(VigirVRCPlugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
+target_link_libraries(VigirVRCPlugin ${catkin_LIBRARIES})
+add_dependencies(VigirVRCPlugin handle_msgs_gencpp atlas_msgs_gencpp)
+
 install(TARGETS
   VigirRobotiqHandPlugin
+  VigirVRCPlugin
   DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}/${PROJECT_NAME}/plugins/
 )
 
