@@ -5,7 +5,8 @@
   <arg name="gzname" default="gazebo"/>
   <arg name="gzworld" default="vigir_atlas_drc_vehicle_fire_hose.world"/>
   <arg name="hand_suffix" default=""/>
-  <arg name="extra_gazebo_args" default="-q" />
+  <arg name="robot_start_in_vehicle" default="1"/>
+  <arg name="extra_gazebo_args" default=""/>
   <arg name="model_args" default="" />
   <arg name="inertia_args" default="" /> <!-- _with_v1_inertia -->
 
@@ -43,6 +44,8 @@
   <param name="robot_initial_pose/roll"  value="0" type="double"/>
   <param name="robot_initial_pose/pitch" value="0" type="double"/>
   <param name="robot_initial_pose/yaw"   value="0" type="double"/>
+ 
+  <param name="robot_start_in_vehicle" value="$(arg robot_start_in_vehicle)" type="bool"/>
   
   <include file="$(find vigir_atlas_gazebo_launch)/launch/atlas_bringup.launch"/>
 </launch>
