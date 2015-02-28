@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="gzname" default="gazebo"/>
+  <arg name="gzworld" default="vigir_atlas_valve_unreachable.world"/>
+  <arg name="hand_suffix" default=""/>
+  <arg name="extra_gazebo_args" default=""/>
+  <arg name="model_args" default="" />
+  <arg name="inertia_args" default="" /> <!-- _with_v1_inertia -->
+
+  <param name="/atlas/time_to_unpin" type="double" value="1.0"/>
+  <param name="/atlas/startup_mode" type="string" value="bdi_stand"/>
+
+  <!-- start gazebo with the Atlas -->
+  <include file="$(find vigir_atlas_gazebo_launch)/launch/atlas_no_controllers.launch">
+    <arg name="gzname" value="$(arg gzname)"/>
+    <arg name="gzworld" value="$(arg gzworld)"/>
+    <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+  </include>
+
+  <!-- to trigger synchronization delay, set
+       atlas_msgs::AtlasCommand::desired_controller_period_ms to non-zero -->
+  <param name="/atlas/delay_window_size" type="double" value="5.0"/>
+  <param name="/atlas/delay_max_per_window" type="double" value="0.25"/>
+  <param name="/atlas/delay_max_per_step" type="double" value="0.025"/>
+
+  <!-- Robot Description -->
+  <!--Team ViGIR loads the robot description during onboard and OCS launch -->
+  <!--    uses special robot_description_gazebo for simulation -->
+  <!--param name="robot_description" command="$(find xacro)/xacro.py '$(find atlas_description)/robots/vigir_atlas.urdf.xacro'" /-->
+
+  <!--Nodes required for Simulation of Hands -->
+  <include file="$(find vigir_atlas_gazebo_launch)/launch/hands/$(env FLOR_LEFT_HAND_TYPE).launch"/>
+  <include file="$(find vigir_atlas_gazebo_launch)/launch/hands/$(env FLOR_RIGHT_HAND_TYPE).launch"/>
+  
+  <include file="$(find vigir_atlas_gazebo_launch)/launch/robots/$(env FLOR_ROBOT_TYPE).launch"/>
+
+  
+  <param name="robot_initial_pose/x"     value="-0.5" type="double"/>
+  <param name="robot_initial_pose/y"     value="0" type="double"/>
+  <param name="robot_initial_pose/z"     value="0.95" type="double"/>
+  <param name="robot_initial_pose/roll"  value="0" type="double"/>
+  <param name="robot_initial_pose/pitch" value="0" type="double"/>
+  <param name="robot_initial_pose/yaw"   value="3.14159" type="double"/>
+
+  
+  <include file="$(find vigir_atlas_gazebo_launch)/launch/atlas_bringup.launch"/>
+</launch>
