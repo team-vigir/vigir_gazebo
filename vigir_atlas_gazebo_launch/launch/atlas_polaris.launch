@@ -3,7 +3,7 @@
 <launch>
 
   <arg name="gzname" default="gazebo"/>
-  <arg name="gzworld" default="vigir_atlas_drc_vehicle_fire_hose.world"/>
+  <arg name="gzworld" default="vigir_atlas_drc_vehicle.world"/>
   <arg name="hand_suffix" default=""/>
   <arg name="robot_start_in_vehicle" default="1"/>
   <arg name="extra_gazebo_args" default=""/>
