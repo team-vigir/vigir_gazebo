@@ -11,7 +11,7 @@
     <remap from="joint_states" to="/left_robotiq/joint_states" />
   </node>
 
-  <node name="l_robotiq_sim_converter" pkg="flor_robotiq_hands_tools" type="sim_robotiq_gazebo_converter">
+  <node name="l_robotiq_sim_converter" pkg="vigir_robotiq_gazebo_tools" type="sim_robotiq_gazebo_converter">
     <param name="hand_side" value="left"  type="string"/>
     <param name="hand_name" value="l_hand" type="string"/>
   </node>
